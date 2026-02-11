@@ -1,2 +1,2 @@
 # repspublic-landing
-RepsPublic Sales HUD Landingpage
+RepsPublic Sales HUD landingpage
