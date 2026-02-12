@@ -380,6 +380,10 @@
             opacity: 1;
         }
 
+        .floating-bg img {
+            opacity: 1 !important;
+        }
+
         /* Enhanced focus states for accessibility */
         .btn:focus-visible,
         input:focus-visible,
@@ -572,9 +576,35 @@
             aspect-ratio: 16 / 9;
             perspective: 1200px;
             overflow: visible;
+            border-radius: 16px;
+        }
+        .floating-bg {
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .floating-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            filter: brightness(0.3);
+            transform: scale(1.1);
+            transition: transform 0.1s linear;
+            opacity: 1 !important;
+        }
+        .floating-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%);
+            pointer-events: none;
         }
         .floating-panel {
             position: absolute;
+            z-index: 1;
             background: rgba(10, 10, 10, 0.85);
             border: 1px solid var(--border-hud);
             border-radius: 12px;
@@ -630,8 +660,8 @@
 
         /* Panel: Transcript */
         .fp-transcript {
-            top: 2%; left: 1%;
-            width: 34%;
+            top: 2%; left: -2%;
+            width: 28%;
             animation: floatPanel1 8s ease-in-out infinite;
         }
         .fp-transcript-buttons {
@@ -671,8 +701,9 @@
 
         /* Panel: Qualification */
         .fp-qualification {
-            top: 48%; left: 0%;
-            width: 30%;
+            bottom: 2%; left: -2%;
+            top: auto;
+            width: 24%;
             animation: floatPanel2 9s ease-in-out 0.5s infinite;
         }
         .fp-dropdown {
@@ -709,8 +740,8 @@
 
         /* Panel: Agenda */
         .fp-agenda {
-            top: 0%; right: 1%;
-            width: 28%;
+            top: 2%; right: -2%;
+            width: 24%;
             animation: floatPanel3 7s ease-in-out 1s infinite;
         }
         .fp-agenda-controls {
@@ -751,8 +782,11 @@
 
         /* Panel: AI Chat */
         .fp-aichat {
-            top: 38%; left: 36%;
-            width: 28%;
+            bottom: 2%; left: 26%;
+            top: auto;
+            right: auto;
+            transform: none;
+            width: 24%;
             animation: floatPanel4 10s ease-in-out 0.3s infinite;
             z-index: 2;
         }
@@ -790,8 +824,9 @@
 
         /* Panel: Objections */
         .fp-objections {
-            top: 52%; right: 0%;
-            width: 30%;
+            bottom: 2%; right: -2%;
+            top: auto;
+            width: 26%;
             animation: floatPanel5 8s ease-in-out 0.8s infinite;
         }
         .fp-objection {
@@ -1342,6 +1377,10 @@
         </div>
         <div class="hero-visual">
             <div class="floating-scene">
+                <!-- Background Image -->
+                <div class="floating-bg">
+                    <img src="womanfront.jpg" alt="Sales professional" loading="eager">
+                </div>
                 <!-- Transcript Panel -->
                 <div class="floating-panel fp-transcript">
                     <div class="fp-header">
@@ -2202,8 +2241,8 @@
                 <div class="footer-column">
                     <h4>Legal</h4>
                     <ul class="footer-links">
-                        <li><a href="mailto:hello@repspublic.com">Imprint</a></li>
-                        <li><a href="mailto:hello@repspublic.com">Privacy Policy</a></li>
+                        <li><a href="/cdn-cgi/l/email-protection#167e737a7a7956647366656663747a7f753875797b">Imprint</a></li>
+                        <li><a href="/cdn-cgi/l/email-protection#640c0108080b2416011417141106080d074a070b09">Privacy Policy</a></li>
                     </ul>
                 </div>
             </div>
@@ -2213,7 +2252,7 @@
                     <a href="https://www.linkedin.com/company/repspublic" target="_blank" aria-label="LinkedIn">
                         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                     </a>
-                    <a href="mailto:hello@repspublic.com" aria-label="Email">
+                    <a href="/cdn-cgi/l/email-protection#6a020f0606052a180f1a191a1f0806030944090507" aria-label="Email">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
                     </a>
                 </div>
@@ -2221,7 +2260,7 @@
         </div>
     </footer>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         // ============================================
         // ENHANCED ANIMATIONS & INTERACTIONS
         // ============================================
@@ -2527,6 +2566,25 @@
             el.style.transform = 'translateY(30px)';
             el.style.transition = `opacity 0.6s ease ${i * 0.1}s, transform 0.6s ease ${i * 0.1}s`;
             obs.observe(el);
+        });
+
+        // ============================================
+        // PARALLAX FLOATING PANELS ON SCROLL
+        // ============================================
+        window.addEventListener('scroll', () => {
+            const scene = document.querySelector('.floating-scene');
+            if (!scene) return;
+            const rect = scene.getBoundingClientRect();
+            const progress = Math.max(0, Math.min(1, 1 - (rect.bottom / (window.innerHeight + rect.height))));
+            
+            scene.querySelectorAll('.floating-panel').forEach((panel, i) => {
+                const speed = 15 + (i * 8);
+                const y = progress * speed;
+                panel.style.transform = `translateY(${-y}px)`;
+            });
+            
+            const bg = scene.querySelector('.floating-bg img');
+            if (bg) bg.style.transform = `scale(1.1) translateY(${progress * 40}px)`;
         });
 
         // ============================================
