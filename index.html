@@ -558,7 +558,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* HUD Visual */
+        /* HUD Visual - Floating Panels */
         .hero-visual {
             position: relative;
             width: 100%;
@@ -566,210 +566,285 @@
             opacity: 0;
             animation: fadeUp 1.2s var(--ease-out-expo) 0.6s forwards;
         }
-        .hud-container {
+        .floating-scene {
             position: relative;
+            width: 100%;
             aspect-ratio: 16 / 9;
-            background: linear-gradient(180deg, var(--black-elevated) 0%, var(--black) 100%);
-            border: 1px solid var(--border-light);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 
-                0 0 0 1px var(--border-subtle),
-                0 60px 120px -40px rgba(0, 0, 0, 0.9),
-                0 0 80px rgba(0, 229, 255, 0.04);
+            perspective: 1200px;
+            overflow: visible;
         }
-        .hud-scanline {
+        .floating-panel {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent 20%, var(--hud-primary) 50%, transparent 80%);
-            opacity: 0.5;
-            animation: scanMove 6s linear infinite;
+            background: rgba(10, 10, 10, 0.85);
+            border: 1px solid var(--border-hud);
+            border-radius: 12px;
+            padding: 18px;
+            backdrop-filter: blur(20px);
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.6),
+                0 0 30px rgba(0, 229, 255, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            transform-style: preserve-3d;
+            will-change: transform;
         }
-        @keyframes scanMove {
-            0% { top: 0; opacity: 0; }
-            5% { opacity: 0.5; }
-            95% { opacity: 0.5; }
-            100% { top: 100%; opacity: 0; }
-        }
-        .hud-corners {
+        .floating-panel::before {
+            content: '';
             position: absolute;
-            inset: 16px;
-            pointer-events: none;
+            top: 0; right: 0;
+            width: 3px;
+            height: 24px;
+            background: var(--hud-primary);
+            border-radius: 0 12px 0 0;
+            opacity: 0.6;
         }
-        .hud-corner {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border-color: rgba(0, 229, 255, 0.4);
-            border-style: solid;
-            border-width: 0;
-        }
-        .hud-corner-tl { top: 0; left: 0; border-top-width: 1px; border-left-width: 1px; }
-        .hud-corner-tr { top: 0; right: 0; border-top-width: 1px; border-right-width: 1px; }
-        .hud-corner-bl { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; }
-        .hud-corner-br { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; }
-        
-        .hud-content {
-            position: absolute;
-            inset: 0;
-            display: grid;
-            grid-template-columns: 240px 1fr 240px;
-            gap: 1px;
-            background: var(--border-subtle);
-        }
-        .hud-panel {
-            background: var(--black-rich);
-            padding: 20px;
-            position: relative;
-        }
-        .hud-panel-header {
+        .fp-header {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
             border-bottom: 1px solid var(--border-subtle);
         }
-        .hud-panel-icon {
-            width: 14px;
-            height: 14px;
+        .fp-header svg {
+            width: 13px; height: 13px;
             color: var(--hud-primary);
             opacity: 0.8;
         }
-        .hud-panel-title {
+        .fp-title {
             font-size: 10px;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.12em;
             color: var(--white-tertiary);
         }
-        .hud-panel-status {
+        .fp-header .fp-controls {
             margin-left: auto;
-            width: 5px;
-            height: 5px;
-            background: var(--hud-success);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--hud-success);
+            display: flex; gap: 6px;
         }
-        .hud-chat { display: flex; flex-direction: column; gap: 10px; }
-        .hud-message {
-            padding: 10px 12px;
-            background: rgba(255, 255, 255, 0.02);
+        .fp-controls span {
+            width: 10px; height: 10px;
+            border-radius: 2px;
+            border: 1px solid var(--white-tertiary);
+            opacity: 0.3;
+        }
+
+        /* Panel: Transcript */
+        .fp-transcript {
+            top: 2%; left: 1%;
+            width: 34%;
+            animation: floatPanel1 8s ease-in-out infinite;
+        }
+        .fp-transcript-buttons {
+            display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;
+        }
+        .fp-btn {
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 600;
+            border: none;
+            cursor: default;
+        }
+        .fp-btn-start {
+            background: var(--hud-success);
+            color: var(--black);
+        }
+        .fp-btn-auto {
+            background: rgba(255,255,255,0.06);
+            color: var(--white-secondary);
+        }
+        .fp-btn-autofill {
+            background: rgba(100, 80, 200, 0.6);
+            color: var(--white);
+        }
+        .fp-btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--white-secondary);
+        }
+        .fp-transcript-text {
+            font-size: 11px;
+            color: var(--white-tertiary);
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        /* Panel: Qualification */
+        .fp-qualification {
+            top: 48%; left: 0%;
+            width: 30%;
+            animation: floatPanel2 9s ease-in-out 0.5s infinite;
+        }
+        .fp-dropdown {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            padding: 7px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .fp-dropdown svg { width: 12px; height: 12px; color: var(--white-tertiary); }
+        .fp-field {
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 10px 0;
+        }
+        .fp-field:last-child { border-bottom: none; }
+        .fp-field-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--white-dim);
+            margin-bottom: 4px;
+        }
+        .fp-field-value {
+            font-size: 11px;
+            color: var(--white-tertiary);
+        }
+
+        /* Panel: Agenda */
+        .fp-agenda {
+            top: 0%; right: 1%;
+            width: 28%;
+            animation: floatPanel3 7s ease-in-out 1s infinite;
+        }
+        .fp-agenda-controls {
+            display: flex; gap: 6px; align-items: center; margin-bottom: 14px;
+        }
+        .fp-agenda-btn {
+            width: 28px; height: 28px;
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            border: none; cursor: default;
+        }
+        .fp-play { background: var(--hud-primary); color: var(--black); }
+        .fp-reset { background: rgba(255,171,0,0.5); color: var(--black); }
+        .fp-add { background: rgba(0,229,255,0.2); color: var(--hud-primary); }
+        .fp-agenda-time {
+            margin-left: auto;
+            font-size: 18px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            color: var(--white-dim);
+        }
+        .fp-agenda-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 12px;
+        }
+        .fp-agenda-item:last-child { border-bottom: none; }
+        .fp-agenda-label { color: var(--white-secondary); }
+        .fp-agenda-dur {
+            font-variant-numeric: tabular-nums;
+            color: var(--white-tertiary);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* Panel: AI Chat */
+        .fp-aichat {
+            top: 38%; left: 36%;
+            width: 28%;
+            animation: floatPanel4 10s ease-in-out 0.3s infinite;
+            z-index: 2;
+        }
+        .fp-chat-msg {
+            background: rgba(255,255,255,0.03);
             border-radius: 8px;
-            border-left: 2px solid var(--hud-primary);
+            padding: 10px 12px;
+            font-size: 12px;
+            color: var(--white-secondary);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        .fp-chat-input {
+            display: flex; gap: 8px; align-items: center;
+        }
+        .fp-chat-input-field {
+            flex: 1;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 11px;
+            color: var(--white-tertiary);
+        }
+        .fp-chat-send {
+            background: var(--hud-primary);
+            color: var(--black);
+            border: none;
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: default;
+        }
+
+        /* Panel: Objections */
+        .fp-objections {
+            top: 52%; right: 0%;
+            width: 30%;
+            animation: floatPanel5 8s ease-in-out 0.8s infinite;
+        }
+        .fp-objection {
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .fp-objection:last-child { margin-bottom: 0; }
+        .fp-objection-active {
+            background: rgba(0, 229, 255, 0.06);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+        }
+        .fp-objection-title {
+            font-weight: 700;
+            color: var(--white-dim);
+            margin-bottom: 6px;
+            font-size: 11px;
+        }
+        .fp-objection-response {
             font-size: 11px;
             color: var(--white-secondary);
             line-height: 1.5;
         }
-        .hud-message-ai {
-            background: rgba(0, 229, 255, 0.03);
-            border-left-color: var(--hud-accent);
-        }
-        .hud-main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .hud-voice-container {
-            position: relative;
-            width: 160px;
-            height: 160px;
-        }
-        .hud-voice-ring {
-            position: absolute;
-            border-radius: 50%;
-            border: 1px solid var(--border-hud);
-        }
-        .hud-voice-ring-1 { inset: 0; animation: ringPulse 3s ease-in-out infinite; }
-        .hud-voice-ring-2 { inset: 20px; animation: ringPulse 3s ease-in-out 0.5s infinite; opacity: 0.6; }
-        .hud-voice-ring-3 { inset: 40px; animation: ringPulse 3s ease-in-out 1s infinite; opacity: 0.3; }
-        @keyframes ringPulse {
-            0%, 100% { transform: scale(1); opacity: 0.4; }
-            50% { transform: scale(1.03); opacity: 0.8; }
-        }
-        .hud-voice-core {
-            position: absolute;
-            inset: 50px;
-            background: radial-gradient(circle, rgba(0, 229, 255, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .hud-voice-icon {
-            width: 28px;
-            height: 28px;
-            color: var(--hud-primary);
-            filter: drop-shadow(0 0 12px rgba(0, 229, 255, 0.5));
-        }
-        .hud-voice-label {
-            position: absolute;
-            bottom: -32px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 9px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            color: var(--hud-primary);
-            opacity: 0.7;
-        }
-        .hud-metrics { display: flex; flex-direction: column; gap: 12px; }
-        .hud-metric {
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.015);
-            border-radius: 8px;
+        .fp-objection-inactive {
+            background: rgba(255,255,255,0.02);
             border: 1px solid var(--border-subtle);
-        }
-        .hud-metric-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-        .hud-metric-label {
-            font-size: 9px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--white-tertiary);
-        }
-        .hud-metric-value {
-            font-size: 10px;
-            font-weight: 600;
-            color: var(--hud-primary);
-        }
-        .hud-metric-bar {
-            height: 3px;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        .hud-metric-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--hud-primary), var(--hud-accent));
-            border-radius: 2px;
-        }
-        .hud-alerts { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
-        .hud-alert {
-            padding: 8px 10px;
-            background: rgba(255, 171, 0, 0.04);
-            border: 1px solid rgba(255, 171, 0, 0.12);
-            border-radius: 6px;
-            font-size: 10px;
             color: var(--white-secondary);
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            font-weight: 600;
+            font-size: 11px;
         }
-        .hud-alert-icon {
-            width: 12px;
-            height: 12px;
-            color: var(--hud-warning);
+
+        /* Float Animations */
+        @keyframes floatPanel1 {
+            0%, 100% { transform: translateY(0px) rotateX(1deg) rotateY(-0.5deg); }
+            50% { transform: translateY(-12px) rotateX(-0.5deg) rotateY(0.5deg); }
+        }
+        @keyframes floatPanel2 {
+            0%, 100% { transform: translateY(0px) rotateX(-0.5deg) rotateY(1deg); }
+            50% { transform: translateY(-15px) rotateX(0.5deg) rotateY(-0.5deg); }
+        }
+        @keyframes floatPanel3 {
+            0%, 100% { transform: translateY(0px) rotateX(0.5deg) rotateY(0.5deg); }
+            50% { transform: translateY(-10px) rotateX(-1deg) rotateY(-0.5deg); }
+        }
+        @keyframes floatPanel4 {
+            0%, 100% { transform: translateY(0px) rotateX(-0.5deg) rotateY(-0.5deg); }
+            50% { transform: translateY(-18px) rotateX(0.5deg) rotateY(0.5deg); }
+        }
+        @keyframes floatPanel5 {
+            0%, 100% { transform: translateY(0px) rotateX(0.5deg) rotateY(-1deg); }
+            50% { transform: translateY(-14px) rotateX(-0.5deg) rotateY(0.5deg); }
         }
 
         /* Vision */
@@ -1200,8 +1275,9 @@
 
         /* Responsive */
         @media (max-width: 1024px) {
-            .hud-content { grid-template-columns: 1fr; }
-            .hud-panel:first-child, .hud-panel:last-child { display: none; }
+            .floating-scene { aspect-ratio: auto; min-height: 500px; }
+            .floating-panel { position: relative !important; width: 100% !important; top: auto !important; left: auto !important; right: auto !important; margin-bottom: 16px; animation: none !important; }
+            .floating-scene { display: flex; flex-direction: column; gap: 12px; perspective: none; }
             .use-cases-grid, .pricing-grid { grid-template-columns: 1fr; }
             .stories-grid { grid-template-columns: 1fr; }
             .features-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1222,13 +1298,9 @@
 <body>
     <!-- Navigation -->
     <nav class="nav">
-        <a href="https://repspublic.onrender.com/register" class="nav-logo">
+        <a href="/" class="nav-logo">
             <div class="nav-logo-mark">
-                <svg viewBox="0 0 32 32" fill="none">
-                    <rect x="2" y="2" width="28" height="28" rx="6" stroke="url(#lg)" stroke-width="1.5"/>
-                    <path d="M10 16L14 20L22 12" stroke="url(#lg)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#00e5ff"/><stop offset="1" stop-color="#64ffda"/></linearGradient></defs>
-                </svg>
+                <img src="/favicon-32.png" alt="RepsPublic" style="width:28px;height:28px;border-radius:4px;">
             </div>
             <span class="nav-logo-text">RepsPublic</span>
         </a>
@@ -1269,64 +1341,91 @@
             </div>
         </div>
         <div class="hero-visual">
-            <div class="hud-container">
-                <div class="hud-scanline"></div>
-                <div class="hud-corners">
-                    <div class="hud-corner hud-corner-tl"></div>
-                    <div class="hud-corner hud-corner-tr"></div>
-                    <div class="hud-corner hud-corner-bl"></div>
-                    <div class="hud-corner hud-corner-br"></div>
+            <div class="floating-scene">
+                <!-- Transcript Panel -->
+                <div class="floating-panel fp-transcript">
+                    <div class="fp-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+                        <span class="fp-title">Transcript</span>
+                        <div class="fp-controls"><span></span><span></span></div>
+                    </div>
+                    <div class="fp-transcript-buttons">
+                        <span class="fp-btn fp-btn-start">▶ Start</span>
+                        <span class="fp-btn fp-btn-auto">● Auto ▾</span>
+                        <span class="fp-btn fp-btn-autofill">Auto-Fill</span>
+                        <span class="fp-btn fp-btn-outline">Export</span>
+                        <span class="fp-btn fp-btn-outline">Summary</span>
+                    </div>
+                    <div class="fp-transcript-text">Click Start to begin recording...</div>
                 </div>
-                <div class="hud-content">
-                    <div class="hud-panel">
-                        <div class="hud-panel-header">
-                            <svg class="hud-panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                            <span class="hud-panel-title">Live Context</span>
-                            <div class="hud-panel-status"></div>
-                        </div>
-                        <div class="hud-chat">
-                            <div class="hud-message">"Draft follow-up for tomorrow 3pm..."</div>
-                            <div class="hud-message hud-message-ai">"Email drafted. Referenced ROI metrics and confirmed demo slot."</div>
-                            <div class="hud-message">"Add their CTO to the invite"</div>
-                        </div>
+
+                <!-- Qualification Panel -->
+                <div class="floating-panel fp-qualification">
+                    <div class="fp-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/></svg>
+                        <span class="fp-title">Qualification</span>
+                        <div class="fp-controls"><span></span><span></span></div>
                     </div>
-                    <div class="hud-panel hud-main">
-                        <div class="hud-voice-container">
-                            <div class="hud-voice-ring hud-voice-ring-1"></div>
-                            <div class="hud-voice-ring hud-voice-ring-2"></div>
-                            <div class="hud-voice-ring hud-voice-ring-3"></div>
-                            <div class="hud-voice-core">
-                                <svg class="hud-voice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-                            </div>
-                            <span class="hud-voice-label">Listening</span>
-                        </div>
+                    <div class="fp-dropdown">BANT <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+                    <div class="fp-field"><div class="fp-field-label">Budget</div><div class="fp-field-value">Enter budget...</div></div>
+                    <div class="fp-field"><div class="fp-field-label">Authority</div><div class="fp-field-value">Enter authority...</div></div>
+                    <div class="fp-field"><div class="fp-field-label">Need</div><div class="fp-field-value">Enter need...</div></div>
+                    <div class="fp-field"><div class="fp-field-label">Timeline</div><div class="fp-field-value">Enter timeline...</div></div>
+                </div>
+
+                <!-- Agenda Panel -->
+                <div class="floating-panel fp-agenda">
+                    <div class="fp-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        <span class="fp-title">Agenda</span>
+                        <div class="fp-controls"><span></span><span></span></div>
                     </div>
-                    <div class="hud-panel">
-                        <div class="hud-panel-header">
-                            <svg class="hud-panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                            <span class="hud-panel-title">MEDDIC</span>
-                        </div>
-                        <div class="hud-metrics">
-                            <div class="hud-metric">
-                                <div class="hud-metric-header"><span class="hud-metric-label">Metrics</span><span class="hud-metric-value">Complete</span></div>
-                                <div class="hud-metric-bar"><div class="hud-metric-fill" style="width: 100%;"></div></div>
-                            </div>
-                            <div class="hud-metric">
-                                <div class="hud-metric-header"><span class="hud-metric-label">Economic Buyer</span><span class="hud-metric-value">Identified</span></div>
-                                <div class="hud-metric-bar"><div class="hud-metric-fill" style="width: 100%;"></div></div>
-                            </div>
-                            <div class="hud-metric">
-                                <div class="hud-metric-header"><span class="hud-metric-label">Decision Process</span><span class="hud-metric-value">Ask Now</span></div>
-                                <div class="hud-metric-bar"><div class="hud-metric-fill" style="width: 30%; background: var(--hud-warning);"></div></div>
-                            </div>
-                        </div>
-                        <div class="hud-alerts">
-                            <div class="hud-alert">
-                                <svg class="hud-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                                Budget concern detected
-                            </div>
-                        </div>
+                    <div class="fp-agenda-controls">
+                        <span class="fp-agenda-btn fp-play">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><polygon points="5,3 19,12 5,21"/></svg>
+                        </span>
+                        <span class="fp-agenda-btn fp-reset">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+                        </span>
+                        <span class="fp-agenda-btn fp-add">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        </span>
+                        <span class="fp-agenda-time">22:00</span>
                     </div>
+                    <div class="fp-agenda-item"><span class="fp-agenda-label">Intro</span><span class="fp-agenda-dur">2:00</span></div>
+                    <div class="fp-agenda-item"><span class="fp-agenda-label">Pain Discovery</span><span class="fp-agenda-dur">5:00</span></div>
+                    <div class="fp-agenda-item"><span class="fp-agenda-label">Demo</span><span class="fp-agenda-dur">10:00</span></div>
+                    <div class="fp-agenda-item"><span class="fp-agenda-label">Pricing</span><span class="fp-agenda-dur">3:00</span></div>
+                    <div class="fp-agenda-item"><span class="fp-agenda-label">Next Steps</span><span class="fp-agenda-dur">2:00</span></div>
+                </div>
+
+                <!-- AI Chat Panel -->
+                <div class="floating-panel fp-aichat">
+                    <div class="fp-header">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4"/></svg>
+                        <span class="fp-title">AI Chat</span>
+                        <div class="fp-controls"><span></span><span></span></div>
+                    </div>
+                    <div class="fp-chat-msg">Hi! I'm your sales assistant. Ask me anything.</div>
+                    <div class="fp-chat-input">
+                        <div class="fp-chat-input-field">Ask something...</div>
+                        <span class="fp-chat-send">Send</span>
+                    </div>
+                </div>
+
+                <!-- Objections Panel -->
+                <div class="floating-panel fp-objections">
+                    <div class="fp-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5"/></svg>
+                        <span class="fp-title">Objections</span>
+                        <div class="fp-controls"><span></span><span></span></div>
+                    </div>
+                    <div class="fp-objection fp-objection-active">
+                        <div class="fp-objection-title">We don't have the budget for this</div>
+                        <div class="fp-objection-response">I get that budget is a concern. Our platform offers a free plan to get started. How could a tool like ours help you achieve your sales goals within your budget?</div>
+                    </div>
+                    <div class="fp-objection fp-objection-inactive">We're happy with our current process</div>
+                    <div class="fp-objection fp-objection-inactive">We're not sure if this will integrate with our systems</div>
                 </div>
             </div>
         </div>
@@ -1808,7 +1907,7 @@
             <div class="demo-grid">
                 <div class="demo-card">
                     <div class="demo-image">
-                        <img src="screenshot-hud.png" alt="RepsPublic HUD with MEDDIC tracking and objection handling" loading="lazy">
+                        <img src="widgets2.png" alt="RepsPublic HUD with MEDDIC tracking and objection handling" loading="lazy">
                     </div>
                     <div class="demo-content">
                         <h3 class="demo-title">Qualification Stays Visible</h3>
@@ -1817,7 +1916,7 @@
                 </div>
                 <div class="demo-card">
                     <div class="demo-image">
-                        <img src="screenshot-voice.png" alt="RepsPublic Voice Control Interface" loading="lazy">
+                        <img src="voicecommands.jpg" alt="RepsPublic Voice Control Interface" loading="lazy">
                     </div>
                     <div class="demo-content">
                         <h3 class="demo-title">Hands Stay Free</h3>
@@ -2077,11 +2176,7 @@
                 <div class="footer-brand">
                     <a href="https://repspublic.onrender.com/register" class="nav-logo">
                         <div class="nav-logo-mark">
-                            <svg viewBox="0 0 32 32" fill="none">
-                                <rect x="2" y="2" width="28" height="28" rx="6" stroke="url(#lg2)" stroke-width="1.5"/>
-                                <path d="M10 16L14 20L22 12" stroke="url(#lg2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                <defs><linearGradient id="lg2" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#00e5ff"/><stop offset="1" stop-color="#64ffda"/></linearGradient></defs>
-                            </svg>
+                            <img src="/favicon-32.png" alt="RepsPublic" style="width:28px;height:28px;border-radius:4px;">
                         </div>
                         <span class="nav-logo-text">RepsPublic</span>
                     </a>
